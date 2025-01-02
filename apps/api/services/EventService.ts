@@ -1,6 +1,7 @@
 import { database } from '@repo/database';
 import { env } from '@repo/env';
 import { type EventType, sanitizeEvent } from '@repo/events/server';
+import { log } from '@repo/observability/log';
 
 export const createEvent = async (event: EventType) => {
   let eventData = await database.event.findUnique({
@@ -8,6 +9,10 @@ export const createEvent = async (event: EventType) => {
   });
 
   if (eventData) {
+    log.info('EventService > Evento já existe', {
+      eventData,
+    });
+
     return eventData;
   }
 

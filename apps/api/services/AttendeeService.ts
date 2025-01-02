@@ -1,4 +1,3 @@
-import { analytics } from '@repo/analytics/posthog/server';
 import {
   type Attendee,
   type CompanySegment,
@@ -9,6 +8,7 @@ import {
 } from '@repo/database';
 import type { AttendeeType } from '@repo/events/server';
 import { sanitizeAttendee } from '@repo/events/server';
+import { log } from '@repo/observability/log';
 
 export const createAttendee = async (
   attendee: AttendeeType
@@ -20,6 +20,10 @@ export const createAttendee = async (
   });
 
   if (attendeeData) {
+    log.info('AttendeeService > Usuário já existe', {
+      attendeeData,
+    });
+
     return attendeeData;
   }
 
@@ -102,13 +106,6 @@ export const createAttendee = async (
         : undefined,
     },
   });
-
-  analytics.capture({
-    event: 'User Created',
-    distinctId: `${attendeeSanitized.ticketSystemId}`,
-  });
-
-  await analytics.shutdown();
 
   return attendeeData;
 };

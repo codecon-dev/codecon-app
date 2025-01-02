@@ -22,7 +22,7 @@ export const POST = async (request: Request): Promise<Response> => {
       data: { pessoa, evento },
     } = payload;
 
-    log.info('Webhook', { id, eventType: 'new.attendee', payload });
+    log.info('Webhook Even3', { id, eventType: 'new.attendee', payload });
 
     const event = await createEvent(evento);
     const attendee = await createAttendee(pessoa);
@@ -31,7 +31,7 @@ export const POST = async (request: Request): Promise<Response> => {
 
     return new Response('User created', { status: 201 });
   } catch (error) {
-    log.error('Webhook', { eventType: 'new.attendee', error });
+    log.error('Webhook Even3', { eventType: 'new.attendee', error });
     return new Response('Error occured', { status: 500 });
   }
 };
