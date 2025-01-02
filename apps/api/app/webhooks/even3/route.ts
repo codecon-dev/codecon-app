@@ -1,4 +1,5 @@
-import { createAttendee } from '@/services/AttendeeService';
+import { addEventToAttendee, createAttendee } from '@/services/AttendeeService';
+import { createEvent } from '@/services/EventService';
 import { env } from '@repo/env';
 import type { WebhookEvent } from '@repo/events/server';
 import { log } from '@repo/observability/log';
@@ -18,12 +19,15 @@ export const POST = async (request: Request): Promise<Response> => {
     const payload = (await request.json()) as WebhookEvent;
     const {
       id,
-      data: { pessoa },
+      data: { pessoa, evento },
     } = payload;
 
     log.info('Webhook', { id, eventType: 'new.attendee', payload });
 
-    await createAttendee(pessoa);
+    const event = await createEvent(evento);
+    const attendee = await createAttendee(pessoa);
+
+    await addEventToAttendee(attendee, event);
 
     return new Response('User created', { status: 201 });
   } catch (error) {

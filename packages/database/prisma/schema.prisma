@@ -15,7 +15,7 @@ model Attendee {
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   deletedAt            DateTime?
-  ticketSystemUserId   Int
+  ticketSystemId       Int
   firstName            String
   lastName             String
   displayName          String
@@ -35,6 +35,7 @@ model Attendee {
   positionLevelId      Int?
   positionLevel        PositionLevel?        @relation(fields: [positionLevelId], references: [id])
   programmingLanguages ProgrammingLanguage[]
+  events               Event[]
 
   @@index([companySegmentId])
   @@index([positionId])
@@ -75,4 +76,18 @@ model ProgrammingLanguage {
   deletedAt DateTime?
   name      String
   attendees Attendee[]
+}
+
+model Event {
+  id                Int        @id @default(autoincrement())
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  deletedAt         DateTime?
+  ticketSystemId    Int        @unique
+  name              String
+  startDate         DateTime?
+  endDate           DateTime?
+  ticketSystemUrl   String?
+  ticketSystemImage String?
+  attendees         Attendee[]
 }

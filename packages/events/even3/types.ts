@@ -36,10 +36,13 @@ type RegistrationType = {
 };
 
 type EventType = {
-  id: string;
+  id: number;
   url: string;
   titulo: string;
-  data: Date;
+  data?: Date;
+  start_date?: string;
+  end_date?: string;
+  image?: string;
 };
 
 type WebhookEvent = {
@@ -88,7 +91,7 @@ type State =
 type Gender = 'M' | 'F' | 'O';
 
 type AttendeeSanitizedType = {
-  ticketSystemUserId: number;
+  ticketSystemId: number;
   firstName: string;
   lastName: string;
   displayName: string;
@@ -106,6 +109,15 @@ type AttendeeSanitizedType = {
   positionLevel?: string;
 };
 
+type EventSanitizedType = {
+  ticketSystemId: number;
+  name: string;
+  startDate?: Date;
+  endDate?: Date;
+  ticketSystemUrl?: string;
+  ticketSystemImage?: string;
+};
+
 export type {
   AttendeeType,
   RegistrationType,
@@ -114,4 +126,5 @@ export type {
   AttendeeSanitizedType,
   State,
   Gender,
+  EventSanitizedType,
 };

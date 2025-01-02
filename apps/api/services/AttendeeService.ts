@@ -1,6 +1,8 @@
 import { analytics } from '@repo/analytics/posthog/server';
 import {
+  type Attendee,
   type CompanySegment,
+  type Event,
   type Position,
   type PositionLevel,
   database,
@@ -8,11 +10,21 @@ import {
 import type { AttendeeType } from '@repo/events/server';
 import { sanitizeAttendee } from '@repo/events/server';
 
-export const createAttendee = async (attendee: AttendeeType): Promise<void> => {
+export const createAttendee = async (
+  attendee: AttendeeType
+): Promise<Attendee> => {
   const attendeeSanitized = sanitizeAttendee(attendee);
 
+  let attendeeData = await database.attendee.findFirst({
+    where: { email: attendeeSanitized.email },
+  });
+
+  if (attendeeData) {
+    return attendeeData;
+  }
+
   const {
-    ticketSystemUserId,
+    ticketSystemId,
     firstName,
     lastName,
     displayName,
@@ -68,9 +80,9 @@ export const createAttendee = async (attendee: AttendeeType): Promise<void> => {
     }
   }
 
-  await database.attendee.create({
+  attendeeData = await database.attendee.create({
     data: {
-      ticketSystemUserId,
+      ticketSystemId,
       firstName,
       lastName,
       displayName,
@@ -93,8 +105,24 @@ export const createAttendee = async (attendee: AttendeeType): Promise<void> => {
 
   analytics.capture({
     event: 'User Created',
-    distinctId: `${attendeeSanitized.ticketSystemUserId}`,
+    distinctId: `${attendeeSanitized.ticketSystemId}`,
   });
 
   await analytics.shutdown();
+
+  return attendeeData;
+};
+
+export const addEventToAttendee = async (
+  attendee: Attendee,
+  event: Event
+): Promise<void> => {
+  await database.attendee.update({
+    where: { id: attendee.id },
+    data: {
+      events: {
+        connect: { id: event.id },
+      },
+    },
+  });
 };

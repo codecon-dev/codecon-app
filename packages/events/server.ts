@@ -3,6 +3,8 @@ import 'server-only';
 import type {
   AttendeeSanitizedType,
   AttendeeType,
+  EventSanitizedType,
+  EventType,
   Gender,
   State,
 } from './even3/types';
@@ -49,7 +51,7 @@ export const sanitizeAttendee = (
   }
 
   return {
-    ticketSystemUserId: attendee.id,
+    ticketSystemId: attendee.id,
     firstName,
     lastName,
     displayName: attendee.nome_para_cracha,
@@ -63,6 +65,17 @@ export const sanitizeAttendee = (
     companySegment,
     position,
     positionLevel,
+  };
+};
+
+export const sanitizeEvent = (event: EventType): EventSanitizedType => {
+  return {
+    ticketSystemId: event.id,
+    name: event.titulo,
+    startDate: event.start_date ? new Date(event.start_date) : undefined,
+    endDate: event.end_date ? new Date(event.end_date) : undefined,
+    ticketSystemImage: event.image,
+    ticketSystemUrl: `https://eventos.codecon.dev/${event.url}`,
   };
 };
 
