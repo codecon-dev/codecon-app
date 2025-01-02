@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
@@ -13,10 +10,84 @@ datasource db {
   relationMode = "prisma"
 }
 
-// This is a stub model.
-// Delete it and add your own Prisma models.
-model Page {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Attendee {
+  id                   Int                   @id @default(autoincrement())
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  deletedAt            DateTime?
+  ticketSystemId       Int
+  firstName            String
+  lastName             String
+  displayName          String
+  gender               String
+  email                String                @unique
+  mobilePhone          String?
+  birthDate            DateTime?
+  city                 String?
+  state                String?
+  linkedin             String?
+  github               String?
+  company              String?
+  companySegmentId     Int?
+  companySegment       CompanySegment?       @relation(fields: [companySegmentId], references: [id])
+  positionId           Int?
+  position             Position?             @relation(fields: [positionId], references: [id])
+  positionLevelId      Int?
+  positionLevel        PositionLevel?        @relation(fields: [positionLevelId], references: [id])
+  programmingLanguages ProgrammingLanguage[]
+  events               Event[]
+
+  @@index([companySegmentId])
+  @@index([positionId])
+  @@index([positionLevelId])
+}
+
+model CompanySegment {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  name      String
+  attendees Attendee[]
+}
+
+model Position {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  name      String
+  attendees Attendee[]
+}
+
+model PositionLevel {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  name      String
+  attendees Attendee[]
+}
+
+model ProgrammingLanguage {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  name      String
+  attendees Attendee[]
+}
+
+model Event {
+  id                Int        @id @default(autoincrement())
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  deletedAt         DateTime?
+  ticketSystemId    Int        @unique
+  name              String
+  startDate         DateTime?
+  endDate           DateTime?
+  ticketSystemUrl   String?
+  ticketSystemImage String?
+  attendees         Attendee[]
 }
