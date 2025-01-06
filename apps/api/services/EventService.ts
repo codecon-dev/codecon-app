@@ -23,6 +23,10 @@ export const createEvent = async (event: EventType) => {
     data: eventSanitized,
   });
 
+  log.info('EventService > Novo evento adicionado', {
+    eventData,
+  });
+
   return eventData;
 };
 

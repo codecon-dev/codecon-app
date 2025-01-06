@@ -27,22 +27,7 @@ export const createAttendee = async (
     return attendeeData;
   }
 
-  const {
-    ticketSystemId,
-    firstName,
-    lastName,
-    displayName,
-    gender,
-    email,
-    city,
-    state,
-    linkedin,
-    github,
-    company,
-    companySegment,
-    position,
-    positionLevel,
-  } = attendeeSanitized;
+  const { companySegment, position, positionLevel } = attendeeSanitized;
 
   let companySegmentData: CompanySegment | null = null;
   let positionData: Position | null = null;
@@ -86,17 +71,7 @@ export const createAttendee = async (
 
   attendeeData = await database.attendee.create({
     data: {
-      ticketSystemId,
-      firstName,
-      lastName,
-      displayName,
-      gender,
-      email,
-      city,
-      state,
-      linkedin,
-      github,
-      company,
+      ...attendeeSanitized,
       companySegment: companySegmentData
         ? { connect: { id: companySegmentData.id } }
         : undefined,
@@ -105,6 +80,10 @@ export const createAttendee = async (
         ? { connect: { id: positionLevelData.id } }
         : undefined,
     },
+  });
+
+  log.info('AttendeeService > Novo usuário adicionado', {
+    attendeeData,
   });
 
   return attendeeData;
