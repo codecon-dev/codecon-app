@@ -11,7 +11,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@clerk/types": "^4.34.0",
+    "@clerk/types": "^4.45.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "22.9.0",
     "@types/react": "18.3.12",
